@@ -1,5 +1,9 @@
 package com.example.stocklosers
 
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.platform.LocalUriHandler
+
+
 import android.Manifest
 import android.content.Context
 import android.net.ConnectivityManager
@@ -257,11 +261,15 @@ private fun QuoteRow(
             .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val uriHandler = LocalUriHandler.current
         Text(
-            q.symbol,
+            text = q.symbol,
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.width(80.dp)
+            modifier = Modifier
+                .width(80.dp)
+                .clickable { uriHandler.openUri(yahooQuoteUrl(q.symbol)) }
         )
+
         Text("${"%.1f".format(q.percentChange)}%", modifier = Modifier.width(80.dp))
         Spacer(Modifier.weight(1f))
         IconButton(onClick = onTogglePin) {
