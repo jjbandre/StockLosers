@@ -19,11 +19,13 @@ class LosersWorker(
     override suspend fun doWork(): Result {
         val threshold = settings.alertDropPercent.first()
         val losers = api.getDayLosers(limit = 100)
-
+// ...
+        // In LosersWorker.kt
+        // ...
         val hits = losers
             .filter { it.percentChange <= -threshold }
-            .filter { !history.alreadyNotified(it.symbol, LocalDate.now()) }
-
+            .filter { !history.hasBeenNotified(it.symbol, LocalDate.now()) } // <<< CORRECTED CALL
+        // ...// ...
         if (hits.isNotEmpty()) {
             Notifier.notifyLosers(appCtx, threshold, hits)
             history.markNotified(hits.map { it.symbol }, LocalDate.now())
